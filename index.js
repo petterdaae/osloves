@@ -1,5 +1,14 @@
 import puppeteer from "puppeteer";
 
+const config = {
+  firstName: process.env.FIRST_NAME,
+  lastName: process.env.LAST_NAME,
+  email: process.env.EMAIL,
+  phone: process.env.PHONE,
+};
+
+const iAmSureThatIWantToOrderPizza = false;
+
 async function wait(seconds) {
   return new Promise((resolve) => {
     setTimeout(() => resolve(), seconds * 1000);
@@ -50,10 +59,10 @@ async function clickButtonWithText(page, name) {
 
   await clickButtonWithText(page, "Add details");
 
-  await fillTextInputSlowly(page, "firstName", "Thomas");
-  await fillTextInputSlowly(page, "lastName", "The tank engine");
-  await fillTextInputSlowly(page, "email", "thomas@thetankengine.com");
-  await fillTextInputSlowly(page, "phone", "45454454");
+  await fillTextInputSlowly(page, "firstName", config.firstName);
+  await fillTextInputSlowly(page, "lastName", config.lastName);
+  await fillTextInputSlowly(page, "email", config.email);
+  await fillTextInputSlowly(page, "phone", config.phone);
 
   await wait(1);
 
@@ -61,8 +70,9 @@ async function clickButtonWithText(page, name) {
   await clickButtonWithText(page, "Select payment method");
   await clickButtonWithText(page, "Save");
 
-  console.log("🙋 Are you sure you want to order? (y/N)");
-
-  // const placeOrder = await page.waitForSelector("text/Place Pickup Order Now");
-  // await placeOrder.evaluate((b) => b.click());
+  if (iAmSureThatIWantToOrderPizza) {
+    // const placeOrder = await page.waitForSelector("text/Place Pickup Order Now");
+    // await placeOrder.evaluate((b) => b.click());
+    console.log("🎉 Your pizza has been ordered");
+  }
 })();
