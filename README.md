@@ -1,4 +1,4 @@
-# Order pizza from Osloves from your terminal!
+# Order pizza from your terminal!
 
 _Use at own risk ;)_
 
