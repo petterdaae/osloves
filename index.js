@@ -37,9 +37,7 @@ async function clickButtonWithText(page, name) {
 }
 
 (async () => {
-  const browser = await puppeteer.launch({
-    headless: true,
-  });
+  const browser = await puppeteer.launch();
 
   const page = await browser.newPage();
 
@@ -71,8 +69,9 @@ async function clickButtonWithText(page, name) {
   await clickButtonWithText(page, "Save");
 
   if (iAmSureThatIWantToOrderPizza) {
-    // const placeOrder = await page.waitForSelector("text/Place Pickup Order Now");
-    // await placeOrder.evaluate((b) => b.click());
-    console.log("🎉 Your pizza has been ordered");
+    await clickButtonWithText(page, "Place Pickup Order Now");
+    console.log("🎉 Pizza is on the way");
   }
+
+  await browser.close();
 })();
