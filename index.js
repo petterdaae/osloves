@@ -7,6 +7,7 @@ async function wait(seconds) {
 }
 
 async function fillTextInputSlowly(page, name, value) {
+  console.log(`🍕 Filling text input [${name}] with [${value}]`);
   const splitted = value.split("");
   for (const char of splitted) {
     await fillTextInput(page, name, char);
@@ -20,24 +21,26 @@ async function fillTextInput(page, name, value) {
   await page.keyboard.type(value);
 }
 
+async function clickButtonWithText(page, name) {
+  console.log(`🍕 Clicking button with text [${name}]`);
+  const button = await page.waitForSelector(`text/${name}`);
+  await button.evaluate((b) => b.click());
+}
+
 (async () => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
   });
+
   const page = await browser.newPage();
 
   await page.goto(
     "https://www.foodbooking.com/ordering/restaurant/menu?restaurant_uid=e59e355f-67eb-4c82-adc2-23902568490d"
   );
 
-  const margherita = await page.waitForSelector("text/26. Margherita");
-  await margherita.click();
-
-  const fourtyCm = await page.waitForSelector("text/40cm");
-  await fourtyCm.click();
-
-  const addToCart = await page.waitForSelector("text/Add to cart");
-  await addToCart.evaluate((b) => b.click());
+  await clickButtonWithText(page, "26. Margherita");
+  await clickButtonWithText(page, "40cm");
+  await clickButtonWithText(page, "Add to cart");
 
   await wait(2);
 
@@ -45,8 +48,7 @@ async function fillTextInput(page, name, value) {
   const goToCartParent = await goToCart.getProperty("parentNode");
   await goToCartParent.evaluate((b) => b.click());
 
-  const setTime = await page.waitForSelector("text/Set time");
-  await setTime.click();
+  await clickButtonWithText(page, "Add details");
 
   await fillTextInputSlowly(page, "firstName", "Thomas");
   await fillTextInputSlowly(page, "lastName", "The tank engine");
@@ -55,19 +57,11 @@ async function fillTextInput(page, name, value) {
 
   await wait(1);
 
-  let save = await page.waitForSelector("text/Save");
-  await save.evaluate((b) => b.click());
+  await clickButtonWithText(page, "Save");
+  await clickButtonWithText(page, "Select payment method");
+  await clickButtonWithText(page, "Save");
 
-  const selectPaymentMethod = await page.waitForSelector(
-    "text/Select payment method"
-  );
-
-  await selectPaymentMethod.evaluate((b) => b.click());
-
-  save = await page.waitForSelector("text/Save");
-  await save.evaluate((b) => b.click());
-
-  console.log("Are you sure you want to order? (y/N");
+  console.log("🙋 Are you sure you want to order? (y/N)");
 
   // const placeOrder = await page.waitForSelector("text/Place Pickup Order Now");
   // await placeOrder.evaluate((b) => b.click());
